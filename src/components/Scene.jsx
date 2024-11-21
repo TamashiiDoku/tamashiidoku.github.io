@@ -47,19 +47,23 @@ function CollisionBox({ position, size = [2, 5, 2], onCollide }) {
 }
 
 function Skybox() {
-  const { scene } = useGLTF('/skybox/quarry.glb')
+  const { scene } = useGLTF(process.env.PUBLIC_URL + '/skybox/quarry.glb')
   return <primitive object={scene} scale={[1550, 1550, 1550]} />
 }
 
 function Model() {
   const modelRef = useRef()
-  const { scene } = useGLTF('/models/reimu.glb')
-
+  const { scene } = useGLTF(process.env.PUBLIC_URL + '/models/reimu.glb')
+  
   useEffect(() => {
-    scene.traverse((object) => {
-      object.userData.collidable = true
-    })
+    if (scene) {
+      scene.traverse((object) => {
+        object.userData.collidable = true
+      })
+    }
   }, [scene])
+
+  if (!scene) return null
 
   return (
     <group>
@@ -192,5 +196,5 @@ export default function Scene() {
   )
 }
 
-useGLTF.preload('/models/reimu.glb')
-useGLTF.preload('/skybox/quarry.glb') 
+useGLTF.preload(process.env.PUBLIC_URL + '/models/reimu.glb')
+useGLTF.preload(process.env.PUBLIC_URL + '/skybox/quarry.glb') 
