@@ -3,10 +3,10 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches:
-      - main  # change this to 'master' if that's your default branch
+      - main  # this is correct for your default branch
 
 permissions:
-  contents: write
+  contents: write  # this is important for deployment
 
 jobs:
   build-and-deploy:
