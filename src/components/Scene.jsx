@@ -86,6 +86,7 @@ function FPSControls() {
   const sprintSpeed = 0.03
   const keys = useRef({})
   const BOUNDARY_SIZE = 220
+  const coordsRef = useRef(null)
   
   const GRAVITY = 0.98
   const JUMP_FORCE = 0.1
@@ -93,8 +94,36 @@ function FPSControls() {
   const isGrounded = useRef(true)
 
   useEffect(() => {
-    const handleKeyDown = (e) => keys.current[e.code] = true
-    const handleKeyUp = (e) => keys.current[e.code] = false
+    const handleKeyDown = (e) => {
+      keys.current[e.code] = true
+      // Show coordinates when Z is pressed
+      if (e.code === 'KeyZ' && coordsRef.current) {
+        coordsRef.current.style.display = 'block'
+      }
+    }
+    
+    const handleKeyUp = (e) => {
+      keys.current[e.code] = false
+      // Hide coordinates when Z is released
+      if (e.code === 'KeyZ' && coordsRef.current) {
+        coordsRef.current.style.display = 'none'
+      }
+    }
+
+    // Create coordinate display element
+    const coordsDisplay = document.createElement('div')
+    coordsDisplay.style.position = 'fixed'
+    coordsDisplay.style.top = '10px'
+    coordsDisplay.style.left = '10px'
+    coordsDisplay.style.backgroundColor = 'rgba(0, 0, 0, 0.7)'
+    coordsDisplay.style.color = 'white'
+    coordsDisplay.style.padding = '10px'
+    coordsDisplay.style.fontFamily = 'monospace'
+    coordsDisplay.style.fontSize = '14px'
+    coordsDisplay.style.zIndex = '1000'
+    coordsDisplay.style.display = 'none' // Hidden by default
+    document.body.appendChild(coordsDisplay)
+    coordsRef.current = coordsDisplay
 
     window.addEventListener('keydown', handleKeyDown)
     window.addEventListener('keyup', handleKeyUp)
@@ -102,6 +131,7 @@ function FPSControls() {
     return () => {
       window.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('keyup', handleKeyUp)
+      coordsDisplay.remove()
     }
   }, [])
 
@@ -109,6 +139,11 @@ function FPSControls() {
     const { camera, scene } = state
     
     if (!camera || !scene) return
+
+    // Update coordinates display
+    if (coordsRef.current) {
+      coordsRef.current.textContent = `X: ${camera.position.x.toFixed(2)} Y: ${camera.position.y.toFixed(2)} Z: ${camera.position.z.toFixed(2)}`
+    }
 
     const previousPosition = camera.position.clone()
     const direction = new THREE.Vector3()
@@ -185,7 +220,7 @@ export default function Scene() {
       backgroundColor: '#111'
     }}>
       <Canvas shadows camera={{ 
-        position: [-50, -25, -50],
+        position: [147, -40, 73],
         fov: 100
       }}>
         <group>
