@@ -172,6 +172,12 @@ function FPSControls() {
 }
 
 export default function Scene() {
+  useEffect(() => {
+    return () => {
+      document.exitPointerLock();
+    };
+  }, []);
+
   return (
     <div style={{ 
       width: '100vw', 
